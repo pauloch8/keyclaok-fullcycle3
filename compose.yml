@@ -2,18 +2,25 @@ version: '3'
 
 services:
 
+  proxy:
+    build: 
+      context: ./proxy
+      dockerfile: Dockerfile
+    ports:
+        - "3000:3000"
+        - "8080:8080"
+    depends_on:
+      - app
+      - keycloak
+
   app:
     build: .
-    ports:
-      - 3000:3000
     volumes:
       - .:/home/node/app
 
   keycloak:
     image: quay.io/keycloak/keycloak:22.0
     command: start-dev #TODO: TROCAR PARA PRODUÇÃO
-    ports:
-      - 8080:8080
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
