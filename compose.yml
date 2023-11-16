@@ -12,11 +12,15 @@ services:
     depends_on:
       - app
       - keycloak
+    networks:
+      - keycloak-flows
 
   app:
     build: .
     volumes:
       - .:/home/node/app
+    networks:
+      - keycloak-flows
 
   keycloak:
     image: quay.io/keycloak/keycloak:22.0
@@ -31,6 +35,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - keycloak-flows
 
   db:
     image: mysql:8.0.35-debian
@@ -47,3 +53,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 5s
+    networks:
+        - keycloak-flows
+
+networks:
+  keycloak-flows:
+    driver: bridge
